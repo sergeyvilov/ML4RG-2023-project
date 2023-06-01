@@ -23,6 +23,7 @@ Basically, you will need to reproduce Fig. 2 from (Gankin et al., 2023) but usin
 
 Additional research questions may include:
 
+* Are low complexity or high complexity motifs easier to reconstruct?
 * Are stronger motifs (as measured by *Stepwise_R-1*) reconstructed better?
 * Would interspecies sequence alignment (i.e. Whole Genome Alignment) improve predictions?
 * ...
