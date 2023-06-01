@@ -27,11 +27,11 @@ Additional research questions may include:
 * Would interspecies sequence alignment improve predictions?
 * ...
 
-These questions will be discussed on later stages of the project.
+These questions will be discussed at later stages of the project.
 
 # Code availability
 
-The code from the current repository can be used to run the mammalian MLM. This is a simplified version of the [original repository](https://github.com/DennisGankin/species-aware-DNA-LM) adapted to mammalian MLM model.
+The code from the current repository can be used to run the mammalian MLM. This is a simplified version of the [original repository](https://github.com/DennisGankin/species-aware-DNA-LM) adapted to the mammalian MLM model.
 
 Use the original repository to implement motif-related evaluation which is necessary to successfully accomplish the project tasks.
 
