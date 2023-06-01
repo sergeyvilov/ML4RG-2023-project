@@ -8,7 +8,7 @@ In particular, you will predict to what extent the MLM is able to reconstruct hu
 
 # RBP motifs
 
-RBP binding sites can be selected based on ([Dominguez et al., 2018](https://www.sciencedirect.com/science/article/pii/S1097276518303514?ref=cra_js_challenge&fr=RR-1)). In particular, you may want to consider the top 5-mer motif for each protein listed in [Table S3](https://ars.els-cdn.com/content/image/1-s2.0-S1097276518303514-mmc4.xlsx). You could start with proteins with significant overlap in the 5-mers comprising the RBNS and eCLIP logos (Fig. S3).
+RBP binding sites can be selected based on ([Dominguez et al., 2018](https://ars.els-cdn.com/content/image/1-s2.0-S1097276518303514-mmc8.pdf)). In particular, you may want to consider the top 5-mer motif for each protein listed in [Table S3](https://ars.els-cdn.com/content/image/1-s2.0-S1097276518303514-mmc4.xlsx). You could start with proteins with significant overlap in the 5-mers comprising the RBNS and eCLIP logos (Fig. S3).
 
 Note that you should also consider the reverse complemented version of each selected motif.
 
