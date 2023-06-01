@@ -6,11 +6,11 @@ For this project you will use a masked language model (MLM) ([Gankin et al., 202
 
 In particular, you will predict to what extent the MLM is able to reconstruct human RNA binding protein (RBP) motifs (or their *binding sites*), similarly to Fig. 2 in  (Gankin et al., 2023). 
 
-# Data
-
-A MLM trained on mammalian 3'UTR sequences will be provided to you via a separate link.
+# RBP motifs
 
 RBP binding sites can be selected based on ([Dominguez et al., 2018](https://www.sciencedirect.com/science/article/pii/S1097276518303514?ref=cra_js_challenge&fr=RR-1)). In particular, you may want to consider the top 5-mer motif for each protein listed in [Table S3](https://ars.els-cdn.com/content/image/1-s2.0-S1097276518303514-mmc4.xlsx). You could start with proteins with significant overlap in the 5-mers comprising the RBNS and eCLIP logos (Fig. S3).
+
+Note that you should also consider the reverse complemented version of each selected motif.
 
 # Research questions
 
@@ -30,9 +30,31 @@ Additional research questions may include:
 
 These questions will be discussed at later stages of the project.
 
-# Code availability
+# Data and code availability
 
 The code from the current repository can be used to run the mammalian MLM. This is a simplified version of the [original repository](https://github.com/DennisGankin/species-aware-DNA-LM) adapted to the mammalian MLM model.
+
+The required dependecies can be installed via conda:
+
+Install  [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html).
+
+Then run:
+
+```
+conda env create -f environment.yml
+conda activate ML4RG-mlm
+```
+
+The following command can then be used to test the MLM ability to reconstruct masked nucleotides in human 3'UTR regions:
+
+```
+python main.py --test --fasta Homo_sapiens_3prime_UTR.fa --species_list 240_species.txt \
+--output_dir ./test --model_weight MLM_mammals_species_aware_5000_weights
+```
+
+Files `Homo_sapiens_3prime_UTR.f` and `MLM_mammals_species_aware_5000_weights` will be provided to you with a separate link.
+
+Note that the inference time improves significantly when running on GPU.
 
 You may need to examine the original repository to implement motif-related evaluation which is necessary to successfully accomplish the project.
 
