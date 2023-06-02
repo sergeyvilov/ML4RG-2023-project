@@ -34,11 +34,7 @@ These questions will be discussed at later stages of the project.
 
 The code from the current repository can be used to run the mammalian MLM. This is a simplified version of the [original repository](https://github.com/DennisGankin/species-aware-DNA-LM) adapted to the mammalian MLM model.
 
-The required dependecies can be installed via conda:
-
-Install  [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html).
-
-Then run:
+The required dependecies can be installed via [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html):
 
 ```
 conda env create -f environment.yml
