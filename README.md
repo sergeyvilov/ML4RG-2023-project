@@ -48,7 +48,7 @@ python main.py --test --fasta Homo_sapiens_3prime_UTR.fa --species_list 240_spec
 --output_dir ./test --model_weight MLM_mammals_species_aware_5000_weights
 ```
 
-Files `Homo_sapiens_3prime_UTR.f` and `MLM_mammals_species_aware_5000_weights` will be provided to you with a separate link.
+Files `Homo_sapiens_3prime_UTR.fa` and `MLM_mammals_species_aware_5000_weights` will be provided to you with a separate link.
 
 Note that the inference time improves significantly when running on GPU.
 
