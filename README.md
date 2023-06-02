@@ -25,7 +25,7 @@ Additional research questions may include:
 
 * Are high complexity motifs easier to reconstruct?
 * Are stronger motifs (*Stepwise_R-1*>0.1) reconstructed better?
-* Would MLM training on alogned sequences (i.e. Whole Genome Alignment) improve predictions?
+* Would MLM training on aligned sequences (i.e. Whole Genome Alignment) improve predictions?
 * ...
 
 These questions will be discussed at later stages of the project.
