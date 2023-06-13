@@ -21,9 +21,9 @@ Basically, you will need to reproduce Fig. 2 from (Gankin et al., 2023) but usin
 
 Additional research questions may include:
 
-* Are high complexity motifs easier to reconstruct?
-* Are stronger motifs (*Stepwise_R-1*>0.1) reconstructed better?
-* Would MLM training on aligned sequences (i.e. Whole Genome Alignment) improve predictions?
+* Are high complexity or low complexity motifs easier to reconstruct?
+* What is the overall masked accuracy for each protein when all its binding sites are considered? 
+* Does masked accuracy improve on motifs with strong interspecies conservation?
 * ...
 
 These questions will be discussed at later stages of the project.
