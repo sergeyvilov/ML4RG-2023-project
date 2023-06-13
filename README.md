@@ -12,6 +12,8 @@ RBP binding sites can be selected based on ([Dominguez et al., 2018](https://ars
 
 # Research questions
 
+Part I
+
 For each selected motif, you will answer the following questions:
 
 1.  Is the masked nucleotide probability for the motif is higher than for a random 5-mer?
@@ -19,14 +21,12 @@ For each selected motif, you will answer the following questions:
 
 Basically, you will need to reproduce Fig. 2 from (Gankin et al., 2023) but using human RBP motifs instead of yeast motifs.
 
-Additional research questions may include:
+Part II
 
-* Are high complexity or low complexity motifs easier to reconstruct?
-* What is the overall masked accuracy for each protein when all its binding sites are considered? 
-* Does masked accuracy improve on motifs with strong interspecies conservation?
-* ...
+1. Are high complexity or low complexity motifs easier to reconstruct?
+2. What is the overall masked accuracy for each protein when all its binding sites are considered? 
+3. Does masked accuracy improve on motifs with strong interspecies conservation?
 
-These questions will be discussed at later stages of the project.
 
 # Data and code availability
 
