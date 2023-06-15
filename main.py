@@ -32,6 +32,7 @@ parser.add_argument("--optimizer_weight", help = "initialization weight of the o
 parser.add_argument("--val_fraction", help = "fraction of validation dataset to use", type = float, default = 0.1, required = False)
 parser.add_argument("--validate_every", help = "validate every N epochs", type = int,  default = 1, required = False)
 parser.add_argument("--test", help = "model to inference mode", action='store_true', default = False, required = False)
+parser.add_argument("--species_agnostic", help = "use a pecies agnostic version", action='store_true', default = False, required = False)
 parser.add_argument("--get_embeddings", help = "save embeddings at test", action='store_true', default = False, required = False)
 parser.add_argument("--seq_len", help = "max UTR sequence length", type = int, default = 5000, required = False)
 parser.add_argument("--train_splits", help = "split each epoch into N epochs", type = int, default = 4, required = False)
@@ -51,12 +52,12 @@ input_params = misc.dotdict(input_params)
 input_params.save_at = misc.list2range(input_params.save_at)
 
 for param_name in ['output_dir', '\\',
-'fasta', 'species_list', '\\',
+'fasta', 'species_list', 'species_agnostic', '\\',
 'test', 'get_embeddings', '\\',
 'seq_len', '\\',
 'tot_epochs', 'save_at', 'train_splits', '\\',
 'val_fraction', 'validate_every', '\\',
-'d_model', 'n_layers', 'dropout', '\\',               
+'d_model', 'n_layers', 'dropout', '\\',
 'model_weight', 'optimizer_weight', '\\',
 'batch_size', 'learning_rate', 'weight_decay', '\\',
 ]:
@@ -67,30 +68,30 @@ for param_name in ['output_dir', '\\',
         print(f'{param_name.upper()}: {input_params[param_name]}')
 
 class SeqDataset(Dataset):
-    
+
     def __init__(self, fasta_fa, seq_df, transform):
-        
+
         self.fasta = pysam.FastaFile(fasta_fa)
-        
+
         self.seq_df = seq_df
         self.transform = transform
-        
+
     def __len__(self):
-        
+
         return len(self.seq_df)
-    
+
     def __getitem__(self, idx):
-        
+
         seq = self.fasta.fetch(seq_df.iloc[idx].seq_name).upper()
-                
+
         species_label = seq_df.iloc[idx].species_label
-                
+
         masked_sequence, target_labels_masked, target_labels, mask, _ = self.transform(seq, motifs = {})
-        
+
         masked_sequence = (masked_sequence, species_label)
-        
+
         return masked_sequence, target_labels_masked, target_labels
-    
+
     def close(self):
         self.fasta.close()
 
@@ -108,21 +109,26 @@ torch.cuda.empty_cache()
 seq_df = pd.read_csv(input_params.fasta + '.fai', header=None, sep='\t', usecols=[0], names=['seq_name'])
 seq_df['species_name'] = seq_df.seq_name.apply(lambda x:x.split(':')[1])
 species_encoding = pd.read_csv(input_params.species_list, header=None).squeeze().to_dict()
-species_encoding = {species:idx for idx,species in species_encoding.items()}
+
+if not input_params.species_agnostic:
+    species_encoding = {species:idx for idx,species in species_encoding.items()}
+else:
+    species_encoding = {species:0 for _,species in species_encoding.items()}
+
 species_encoding['Homo_sapiens'] = species_encoding['Pan_troglodytes']
 seq_df['species_label'] = seq_df.species_name.map(species_encoding)
 
 
 if not input_params.test:
-    
+
     #Train and Validate
-    
-    seq_transform = sequence_encoders.SequenceDataEncoder(seq_len = input_params.seq_len, total_len = input_params.seq_len, 
+
+    seq_transform = sequence_encoders.SequenceDataEncoder(seq_len = input_params.seq_len, total_len = input_params.seq_len,
                                                       mask_rate = 0.15, split_mask = True)
-    
-    N_train = int(len(seq_df)*(1-input_params.val_fraction))       
+
+    N_train = int(len(seq_df)*(1-input_params.val_fraction))
     train_df, test_df = seq_df.iloc[:N_train], seq_df.iloc[N_train:]
-                  
+
     train_fold = np.repeat(list(range(input_params.train_splits)),repeats = N_train // input_params.train_splits + 1 )
     train_df['train_fold'] = train_fold[:N_train]
 
@@ -133,30 +139,30 @@ if not input_params.test:
     test_dataloader = DataLoader(dataset = test_dataset, batch_size = input_params.batch_size, num_workers = 2, collate_fn = None, shuffle = False)
 
 elif input_params.get_embeddings:
-    
+
     #Test and get sequence embeddings (MPRA)
-    
+
     seq_transform = sequence_encoders.RollingMasker(mask_stride = 50, frame = 0)
 
     test_dataset = SeqDataset(input_params.fasta, seq_df, transform = seq_transform)
     test_dataloader = DataLoader(dataset = test_dataset, batch_size = 1, num_workers = 1, collate_fn = None, shuffle = False)
-    
+
 else:
-    
+
     #Test
-    
-    seq_transform = sequence_encoders.SequenceDataEncoder(seq_len = input_params.seq_len, total_len = input_params.seq_len, 
+
+    seq_transform = sequence_encoders.SequenceDataEncoder(seq_len = input_params.seq_len, total_len = input_params.seq_len,
                                                       mask_rate = 0.15, split_mask = True, frame = 0)
-    
+
     test_dataset = SeqDataset(input_params.fasta, seq_df, transform = seq_transform)
     test_dataloader = DataLoader(dataset = test_dataset, batch_size = input_params.batch_size, num_workers = 2, collate_fn = None, shuffle = False)
 
 species_encoder = SpecAdd(embed = True, encoder = 'label', d_model = input_params.d_model)
 
-model = DSSResNetEmb(d_input = 5, d_output = 5, d_model = input_params.d_model, n_layers = input_params.n_layers, 
+model = DSSResNetEmb(d_input = 5, d_output = 5, d_model = input_params.d_model, n_layers = input_params.n_layers,
                      dropout = input_params.dropout, embed_before = True, species_encoder = species_encoder)
 
-model = model.to(device) 
+model = model.to(device)
 
 model_params = [p for p in model.parameters() if p.requires_grad]
 
@@ -223,10 +229,10 @@ else:
 
     print(f'EPOCH {last_epoch}: Test/Inference...')
 
-    test_metrics, test_embeddings =  train_eval.model_eval(model, optimizer, test_dataloader, device, 
+    test_metrics, test_embeddings =  train_eval.model_eval(model, optimizer, test_dataloader, device,
                                                           get_embeddings = input_params.get_embeddings, silent = True)
-    
-    
+
+
 
     print(f'epoch {last_epoch} - test, {metrics_to_str(test_metrics)}')
 
